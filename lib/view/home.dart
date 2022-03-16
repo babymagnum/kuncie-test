@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kuncie_test/controller/home.dart';
@@ -66,12 +67,16 @@ class HomeScreen extends StatelessWidget {
                 isPlaying ? Colors.black26 : Colors.transparent),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              item.artworkUrl60 ?? '',
-              width: 60,
-              height: 60,
-              fit: BoxFit.fill,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.network(
+                item.artworkUrl60 ?? '',
+                width: 60,
+                height: 60,
+                fit: BoxFit.fill,
+              ),
             ),
             SizedBox(
               width: 10,
@@ -236,7 +241,7 @@ class HomeScreen extends StatelessWidget {
                       !_homeCt.isMusicError.value) ...[
                     Expanded(
                       child: _homeCt.songs.isEmpty ?
-                      Text('Hasil tidak ditemukan!', style: ThemeTextStyle.interRegular.copyWith(color: Colors.black38, fontSize: 14),) :
+                      Text('Hasil tidak ditemukan!', style: ThemeTextStyle.interRegular.copyWith(color: Colors.black38, fontSize: 14),).marginOnly(top: Get.height * 0.4) :
                       _songs,
                     ),
                     ..._musicPlayer
@@ -249,10 +254,20 @@ class HomeScreen extends StatelessWidget {
                     ).marginOnly(top: Get.height * 0.4)
                   ],
                   if (_homeCt.isMusicError.value) ...[
-                    Text(
-                      'Network error, click here to reload!',
-                      style: ThemeTextStyle.interRegular
-                          .copyWith(fontSize: 14, color: Colors.black38),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Request error! ',
+                        style: ThemeTextStyle.interRegular
+                            .copyWith(fontSize: 14, color: Colors.black38),
+                        children: [
+                          TextSpan(
+                            text: 'Reload here',
+                            style: ThemeTextStyle.interRegular
+                                .copyWith(fontSize: 14, color: Colors.lightBlueAccent),
+                            recognizer: TapGestureRecognizer()..onTap = () => _homeCt.getSongs()
+                          )
+                        ]
+                      ),
                     ).marginOnly(top: Get.height * 0.4)
                   ]
                 ],
